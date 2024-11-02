@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Map Example</title>
+    <!-- 加載 Google Maps JavaScript API 並附帶 API 金鑰 -->
+    <script>
+        const apiKey = "{{ api_key }}";
+        (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});
+          var d=b.maps||(b.maps={}),
+              r=new Set,e=new URLSearchParams,
+              u=()=>h||(h=new Promise(async(f,n)=>{
+                await (a=m.createElement("script"));
+                e.set("libraries",[...r]+"");
+                for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);
+                e.set("callback",c+".maps."+q);
+                a.src=`https://maps.${c}apis.com/maps/api/js?`+e;
+                d[q]=f;
+                a.onerror=()=>h=n(Error(p+" could not load."));
+                a.nonce=m.querySelector("script[nonce]")?.nonce||"";
+                m.head.append(a)
+              }));
+          d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))
+        })({
+          key: apiKey,
+          v: "weekly",
+          // Use the 'v' parameter to indicate the version to use (weekly, beta, alpha, etc.).
+          // Add other bootstrap parameters as needed, using camel case.
+        });
+    </script>
+    <style>
+        /* 確保 html 和 body 佔據 100% 的高度 */
+        html, body {
+          height: 100%;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column; /* 設置標題在上方 */
+        }
+
+        /* 設置標題區域 */
+        #header {
+            background-color: #f1f1f1;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 主容器，包含 infoPanel 和 map */
+        #main {
+            display: flex;
+            flex-grow: 1; /* 讓主容器填滿剩餘的頁面空間 */
+        }
+
+        /* 設置地圖容器的大小 */
+        #map {
+            height: 100%;
+            width: 80%;
+            float: right;
+        }
+        
+        /* 隱藏的彈出窗口 */
+        #popupWindow {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            max-width: 500px;
+        }
+
+        /* 關閉按鈕的樣式 */
+        .close-btn {
+            display: block;
+            text-align: right;
+            margin-top: -10px;
+            margin-right: -10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #infoPanel {
+            width: 20%;
+            height: 100%;
+            float: left;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            overflow-y: auto;
+        }
+
+        /* 標籤樣式 */
+        .tab {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #eee;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .tab.active {
+            background-color: #ddd;
+            font-weight: bold;
+        }
+
+        /* 標籤內容 */
+        .tab-content {
+            display: block;
+            padding-top: 10px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .leg-info {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .step-info {
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 標題部分 -->
+<div id="header">
+    My Google Map
+</div>
+
+ <!-- 新增行程選擇器 -->
+ <div id="scheduleSelector">
+    <label for="schedule">Choose a schedule:</label>
+    <select id="schedule">
+      <option value="schedule1">Schedule 1</option>
+      <option value="schedule2">Schedule 2</option>
+      <option value="schedule3">Schedule 3</option>
+    </select>
+</div>
+
+<!-- 主內容容器 -->
+<div id="main">
+<!-- 自定義的彈出窗口 -->
+<div id="popupWindow">
+    <div class="close-btn" onclick="closePopup()">×</div> <!-- 關閉按鈕 -->
+    <div id="routeSetting"></div>
+    <div id="popupContent"></div>
+</div>
+
+<!-- 左側的行程面板 -->
+<div id="infoPanel">
+    <div>
+        <span class="tab active" id="tab1">Day 1 (Mon)</span>
+        <span class="tab" id="tab2">Day 2 (Tues)</span>
+    </div>
+    <div id="scheduleContent" class="tab-content"></div>
+</div>
+
+<!-- 地圖容器 -->
+<div id="map"></div>
+</div>
+
+<script src="{{ url_for('static', filename='map.js') }}"></script>
+
+</body>
+</html>
